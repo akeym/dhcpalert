@@ -1,0 +1,30 @@
+dhcpalert - a simple script to email someone if a dhcp lease pool hits a
+certain threshold.
+
+REQUIREMENTS
+- ISC dhcpd
+- dhcpd-pools (http://dhcpd-pools.sourceforge.net/)
+
+INSTALL
+- install and configure isc-dhcpd and dhcpd-pools (some notes below)
+- copy this script to your dhcp server
+- configure settings inside dhcpalert.py
+- `touch status_file`
+- run dhcpd-pools and pipe output to dhcpalert at regular interval (via
+cron, for example)
+
+USAGE
+
+dhcpd-pools -c dhcpd.conf -l dhcpd.leases -L 22 -f c | ./dhcpalert.py
+
+NOTES
+
+dhcpalert.py expects output format of CSV and verbosity level of '22' from
+dhcpd-pools.  For our case, we were only concerned about Shared Networks,
+not specific ranges.  This script should be able to handle ranges but hasn't
+been tested in that fashion (the output from dhcpd-pools -L 11 is similar
+enough).  If you do not use shared-network defs in your dhcpd.conf, you can
+easily create a separate fake dhcpd.conf for dhcpd-pools to parse with the
+subnets/pools/ranges you're concerned about.  For our installation, the
+monitored pools were fairly static (updated maybe once a year) so maintaining
+a separate config wasn't an issue.
